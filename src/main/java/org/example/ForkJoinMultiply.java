@@ -14,7 +14,7 @@ public class ForkJoinMultiply {
      * @return Matriz resultante C
      * @throws IllegalArgumentException si las dimensiones de las matrices no son compatibles
      */
-    public static double[][] multiply(double[][] A, double[][] B) {
+    public static double[][] multiply(double[][] A, double[][] B, int maxThreads) {
         int rowsA = A.length;
         int colsA = A[0].length;
         int colsB = B[0].length;
@@ -24,7 +24,7 @@ public class ForkJoinMultiply {
 
         double[][] C = new double[rowsA][colsB];
 
-        ForkJoinPool pool = new ForkJoinPool();
+        ForkJoinPool pool = new ForkJoinPool(maxThreads);
         MatrixMultiplyTask task = new MatrixMultiplyTask(A, B, C, 0, rowsA);
         pool.invoke(task);
 

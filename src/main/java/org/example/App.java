@@ -1,18 +1,12 @@
 package org.example;
 
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.util.Util;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class App {
     private static int SIZE = 1024;
     private static long SEED = 6834723;
-    private static final int EXECUTIONS = 20;
+    private static final int EXECUTIONS = 10;
     private static final String CSV_FILE = "matrix_multiplication_results.csv";
     public static void main(String[] args) {
 
@@ -47,7 +41,7 @@ public class App {
         System.out.println("============ ExecutorService Matrix Multiplication ============");
 
         int maxThreads = Runtime.getRuntime().availableProcessors();
-        for (int threads = 1; threads <= maxThreads; threads++) {
+        for (int threads = 0; threads <= maxThreads; threads++) {
             final int threadCount = threads;
             System.out.println("\nRunning ExecutorService Multiplication with " + threads + " threads...");
             results.add(Utils.runMultipleExecutions(
@@ -57,9 +51,13 @@ public class App {
 
         System.out.println("=======================================");
         System.out.println("============ ForkJoin Matrix Multiplication ============");
-        System.out.println("\nRunning ForkJoin Multiplication...");
-        results.add(Utils.runMultipleExecutions("ForkJoin",
-                () -> ForkJoinMultiply.multiply(A, B), EXECUTIONS));
+        for (int threads = 0; threads <= maxThreads; threads++) {
+            final int threadCount = threads;
+            System.out.println("\nRunning ForkJoin Multiplication with " + threads + " threads...");
+            results.add(Utils.runMultipleExecutions(
+                    "ForkJoin_" + threads + "threads",
+                    () -> ForkJoinMultiply.multiply(A, B, threadCount), EXECUTIONS));
+        }
 
         System.out.println("=======================================");
 
